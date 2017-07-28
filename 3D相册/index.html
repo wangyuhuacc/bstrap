@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+    <style>
+        *{margin: 0;
+            padding:0;
+        }
+        body{
+            background-color: #000;
+            overflow: hidden;
+        }
+        #perspective{
+              perspective:800px;
+        }
+        #wrap{
+            width: 133px;
+            height: 200px;
+            border: 1px solid transparent;
+            margin: 150px auto;
+            position: relative;
+            transform-style: preserve-3d;/*3D场景打造*/ 
+            transform: rotateX(-10deg);
+
+        }
+        #wrap img{
+            position:absolute;
+            top: 0;
+            -webkit-box-reflect:below 5px
+            -webkit-linear-gradient(top ,  rgba(0,0,0,0) 40% ,   rgba(0,0,0,.5) 100%);
+        }
+    </style>
+</head>
+<body>
+<div id="perspective">
+        <div id="wrap">
+                 <img src="1.jpg"width="133"height="200 " alt="">
+                 <img src="2.jpg"width="133"height="200 " alt="">
+                 <img src="3.jpg"width="133"height="200 " alt="">
+                <img src="4.jpg"width="133"height="200 " alt="">
+                <img src="5.jpg"width="133"height="200 " alt="">
+                <img src="6.jpg"width="133"height="200 " alt="">
+                 <img src="7.jpg"width="133"height="200 " alt="">
+                 <img src="8.jpg"width="133"height="200 " alt="">
+                <img src="9.jpg"width="133"height="200 " alt="">
+                <img src="10.jpg"width="133"height="200 " alt="">
+                <img src="11.jpg"width="133"height="200 " alt="">
+
+        </div>
+</div>
+</body>
+<script>
+    var oimg=document.getElementsByTagName("img");
+    var nowX ,nowY, lastX, lastY, minX, minY,roX=-10 ,roY=0;
+    var owrap=document.getElementById("wrap");
+    var timer=null;
+    (function(i){
+            var imglen=oimg.length;
+            var deg=360/imglen;
+            for(;i<imglen;i++){
+                oimg[i].style.transform="rotateY("+deg*i+"deg) translateZ(350px)";
+            }
+    })(0);
+document.onmousedown=function(e){
+        var e=e||window.event;//鼠标按下 获得初始化鼠标位置
+        lastX=e.clientX;
+        lastY=e.clientY;
+        this.onmousemove=function(e){//鼠标每次移动产生的差值
+                var e=e||window.event;
+                nowX=e.clientX;
+                nowY=e.clientY;
+                    //计算差
+                minX=nowX -lastX;
+                minY=nowY -lastY; 
+                //求旋转度数
+                roY+=minX*0.2;
+                roX-=minY*0.1;
+                //赋值给度数
+                owrap.style.transform="rotateX("+roX+"deg) rotateY("+roY+"deg)";  
+                //用完之后变成旧的参数
+                lastX=nowX;
+                lastY=nowY;
+        }
+        this.onmouseup=function(){//鼠标松开事件
+                this.onmousemove=null;
+                timer=setInterval(function(){
+                    //让差值重复乘于0.95 慢慢变小
+                    minX*=0.95;
+                    minY*=0.95;
+                    //再赋值
+                      roY+=minX*0.2;
+                     roX-=minY*0.1;
+                    owrap.style.transform="rotateX("+roX+"deg) rotateY("+roY+"deg)";  
+                    if(Math.abs(minX)<0.1||Math.abs(minY)<0.1){//差值的绝对值
+                                clearInterval(timer);//停止定时器
+                    }
+                },1000/60);
+        }
+}
+</script>
+</html>
